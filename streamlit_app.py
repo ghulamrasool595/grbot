@@ -8,7 +8,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Custom CSS for better UX (RTL, font, colors)
+# Custom CSS for better UX
 st.markdown("""
     <style>
         .stApp { direction: rtl; text-align: right; }
@@ -24,7 +24,7 @@ st.markdown("""
 st.title("🤖 سنڌي چيٽ بوٽ")
 st.caption("توھان سان سنڌي ۾ ڳالھائڻ لاءِ تيار آهيان!")
 
-# === YOUR API KEY IS DIRECTLY ADDED HERE ===
+# Your API key (keep it safe!)
 genai.configure(api_key="AIzaSyB8jWUIif6xKDZVQTq6MlhKp7jxIiPrCMs")
 
 # Initialize chat history
@@ -40,17 +40,16 @@ for message in st.session_state.messages:
 
 # Chat input
 if prompt := st.chat_input("پنهنجو پيغام هتي لکو..."):
-    # Add user message
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="👤"):
         st.markdown(prompt)
 
-    # Generate bot response
     with st.chat_message("assistant", avatar="🤖"):
         with st.spinner("ٽائپ ڪري رهيو آهي..."):
             try:
-                model = genai.GenerativeModel("gemini-1.5-flash")
-                # Force response in Sindhi
+                # UPDATED MODEL NAME HERE
+                model = genai.GenerativeModel("gemini-2.0-flash")
+                
                 full_prompt = f"هميشه سنڌي ٻولي ۾ جواب ڏيو، سنڌي عربي رسم الخط ۾: {prompt}"
                 
                 response = model.generate_content(full_prompt)
@@ -59,8 +58,8 @@ if prompt := st.chat_input("پنهنجو پيغام هتي لکو..."):
                 st.markdown(bot_response)
                 st.session_state.messages.append({"role": "assistant", "content": bot_response})
             except Exception as e:
-                error_msg = f"معاف ڪجو، غلطي ٿي وئي: {str(e)}"
-                st.markdown(error_msg)
+                error_msg = "معاف ڪجو، ڪا غلطي ٿي وئي. ٻيهر ڪوشش ڪريو."
+                st.markdown(error_msg + f" (تفصيل: {str(e)})")
                 st.session_state.messages.append({"role": "assistant", "content": error_msg})
 
 # Sidebar
@@ -70,8 +69,5 @@ with st.sidebar:
         st.session_state.messages = [{"role": "assistant", "content": "سلام! مان هڪ سنڌي چيٽ بوٽ آهيان. توهان سان ڳالهائڻ ۾ خوشي ٿيندي."}]
         st.rerun()
     
-    st.info("API Key هاڻي ڪوڊ ۾ شامل آهي – بوٽ تيار آهي!")
-    st.markdown("### بهتر UX")
-    st.markdown("- RTL support")
-    st.markdown("- موبائل فرينڊلي")
-    st.markdown("- ٽائپنگ انڊيڪيٽر")
+    st.success("ماڊل اپڊيٽ ٿي ويو: gemini-2.0-flash استعمال ٿي رهيو آهي!")
+    st.info("هاڻي بوٽ صحيح ڪم ڪندو!")
