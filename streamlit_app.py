@@ -57,4 +57,4 @@ with st.sidebar:
         st.session_state.messages = [{"role": "assistant", "content": "سلام! مان هڪ سنڌي چيٽ بوٽ آهيان."}]
         st.rerun()
     st.success("ماڊل: gemini-2.5-flash (تيز ۽ بهترين سنڌي سپورٽ)")
-    st.info("نئون API Key secrets.toml ۾ رکو!")
+    st.info("نئون AIzaSyBNgs5XzdpKjn52ItZ48ZCO_31PXnZ7Ato ۾ رکو!")
