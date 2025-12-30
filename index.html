@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sd" dir="rtl">  <!-- Sindhi language and RTL for Arabic script -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سنڌي چيٽ بوٽ</title>  <!-- Title in Sindhi: Sindhi Chatbot -->
+    <style>
+        body { font-family: 'Noto Nastaliq Urdu', sans-serif; background: #f0f0f0; margin: 0; padding: 0; }
+        #chat-container { max-width: 600px; margin: 20px auto; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        #chat-window { height: 400px; overflow-y: scroll; padding: 10px; display: flex; flex-direction: column; }
+        .message { margin: 10px; padding: 10px; border-radius: 20px; max-width: 80%; }
+        .user { background: #dcf8c6; align-self: flex-end; }
+        .bot { background: #ffffff; align-self: flex-start; border: 1px solid #eee; }
+        #input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; }
+        #user-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; margin-right: 10px; }
+        button { background: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+        .typing { font-style: italic; color: gray; }
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) { body { background: #121212; } #chat-container { background: #1f1f1f; } .bot { background: #2a2a2a; border: 1px solid #333; } .user { background: #075e54; } }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">  <!-- Font for Sindhi script -->
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-window"></div>
+        <div id="input-area">
+            <input id="user-input" type="text" placeholder="پنهنجو پيغام هتي لکو...">  <!-- Placeholder in Sindhi -->
+            <button onclick="sendMessage()">موڪلڻ</button>  <!-- Button in Sindhi: Send -->
+        </div>
+    </div>
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+
+        function addMessage(text, sender) {
+            const msg = document.createElement('div');
+            msg.classList.add('message', sender);
+            msg.textContent = text;
+            chatWindow.appendChild(msg);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function showTyping() {
+            const typing = document.createElement('div');
+            typing.classList.add('message', 'bot', 'typing');
+            typing.textContent = 'ٽائپ ڪري رهيو آهي...';  // Sindhi: Typing...
+            chatWindow.appendChild(typing);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            return typing;
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+            addMessage(message, 'user');
+            userInput.value = '';
+            const typingIndicator = showTyping();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                typingIndicator.remove();
+                addMessage(data.response, 'bot');
+            } catch (error) {
+                typingIndicator.remove();
+                addMessage('معاف ڪجو، غلطي ٿي وئي. ٻيهر ڪوشش ڪريو.', 'bot');  // Sindhi error message
+            }
+        }
+
+        // On load: Welcome message in Sindhi
+        addMessage('سلام! مان هڪ سنڌي چيٽ بوٽ آهيان. توهان سان ڳالهائڻ ۾ خوشي ٿيندي.', 'bot');
+    </script>
+</body>
+</html>
